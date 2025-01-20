@@ -17,6 +17,9 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -30,15 +33,20 @@ public class UserEntity {
     private String position;
 
     @Column(nullable = false)
+    private String role;
+
+    @Column(nullable = false)
     private LocalDate birthDate;
 
     public UserDTO toDTO() {
         return UserDTO.builder()
                 .id(this.id)
                 .email(this.email)
+                .name(this.name)
                 .password(this.password)
                 .title(this.title)
                 .position(this.position)
+                .role(this.role)
                 .birthDate(this.birthDate)
                 .build();
     }
