@@ -70,9 +70,13 @@ public class UserService {
             RefreshToken newRefreshToken = jwtUtil.generateRefreshToken(email);
             String newRefreshTokenKey = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set(newRefreshTokenKey, newRefreshToken.getToken(), 7, TimeUnit.DAYS);
-            redisTemplate.delete(refreshTokenKey);
+            deleteRefreshToken(refreshTokenKey);
             return newAccessToken.getToken() + ":" + newRefreshTokenKey;
         }
         return null;
+    }
+
+    public void deleteRefreshToken(String refreshTokenKey) {
+        redisTemplate.delete(refreshTokenKey);
     }
 }

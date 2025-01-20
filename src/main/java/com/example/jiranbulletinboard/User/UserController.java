@@ -70,4 +70,25 @@ public class UserController {
         userService.registerUser(userDTO);
         return "redirect:/user/login";
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    // Invalidate the refresh token in Redis
+                    userService.invalidateRefreshToken(cookie.getValue());
+
+                    // Remove the cookie
+                    cookie.setValue(null);
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
