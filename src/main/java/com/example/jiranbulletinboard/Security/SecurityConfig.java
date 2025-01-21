@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -25,16 +26,24 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/post/**").authenticated()
-                        .anyRequest().permitAll())
+                        .requestMatchers("/auth/**", "/user/register").permitAll()
+                        .requestMatchers("/page/**").permitAll()
+                        .requestMatchers(
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/webjars/**",
+                                "/favicon.ico"
+                        ).permitAll()
+                        .requestMatchers("/user/**", "/post/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().denyAll())
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/user/login")
+                        .logoutSuccessUrl("/page/login")
                         .invalidateHttpSession(true))
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
-
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
