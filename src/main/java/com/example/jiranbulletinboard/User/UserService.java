@@ -10,6 +10,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
+import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +33,32 @@ public class UserService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    private final PublicKey publicKey;
+    private final PrivateKey privateKey;
+
+    public UserService() {
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(2048);
+            KeyPair keyPair = keyGen.generateKeyPair();
+            this.publicKey = keyPair.getPublic();
+            this.privateKey = keyPair.getPrivate();
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing RSA keys", e);
+        }
+    }
+
+    public String getPublicKey() {
+        try {
+            X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(publicKey.getEncoded());
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PublicKey pubKey = keyFactory.generatePublic(x509EncodedKeySpec);
+            return Base64.getEncoder().encodeToString(pubKey.getEncoded());
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting public key", e);
+        }
+    }
+
     public void registerUser(UserDTO user) {
         // 비밀번호 암호화
         String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
@@ -36,14 +67,21 @@ public class UserService {
         // 사용자 저장
         userRepository.save(user.toEntity());
     }
-    public String authenticateUser(String email, String password, HttpServletRequest request) {
-        UserEntity userEntity = userRepository.findByEmail(email);
-        if (userEntity != null && bCryptPasswordEncoder.matches(password, userEntity.getPassword())) {
-            AccessToken accessToken = jwtUtil.generateAccessToken(email, userEntity.getId(), userEntity.getName(), userEntity.getRole(), userEntity.getTitle(), userEntity.getPosition(), request.getRemoteAddr());
-            RefreshToken refreshToken = jwtUtil.generateRefreshToken(email);
-            String refreshTokenKey = UUID.randomUUID().toString();
-            redisTemplate.opsForValue().set(refreshTokenKey, refreshToken.getToken(), 7, TimeUnit.DAYS);
-            return accessToken.getToken() + ":" + refreshTokenKey;
+    public String authenticateUser(String encryptedEmail, String encryptedPassword, HttpServletRequest request) {
+        try {
+            String email = decrypt(encryptedEmail);
+            String password = decrypt(encryptedPassword);
+
+            UserEntity userEntity = userRepository.findByEmail(email);
+            if (userEntity != null && bCryptPasswordEncoder.matches(password, userEntity.getPassword())) {
+                AccessToken accessToken = jwtUtil.generateAccessToken(email, userEntity.getId(), userEntity.getName(), userEntity.getRole(), userEntity.getTitle(), userEntity.getPosition(), request.getRemoteAddr());
+                RefreshToken refreshToken = jwtUtil.generateRefreshToken(email);
+                String refreshTokenKey = UUID.randomUUID().toString();
+                redisTemplate.opsForValue().set(refreshTokenKey, refreshToken.getToken(), 7, TimeUnit.DAYS);
+                return accessToken.getToken() + ":" + refreshTokenKey;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error during authentication", e);
         }
         return null;
     }
@@ -78,5 +116,13 @@ public class UserService {
 
     public void deleteRefreshToken(String refreshTokenKey) {
         redisTemplate.delete(refreshTokenKey);
+    }
+
+    private String decrypt(String encryptedData) throws Exception {
+        // Decrypt the data using the stored private key
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+        return new String(decryptedBytes);
     }
 }

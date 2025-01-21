@@ -35,6 +35,19 @@ public class UserController {
         return "user/registerPage";
     }
 
+    //사용자 정보 불러 오기(토큰에 있는 ID or Email로)
+    @GetMapping("/info")
+    public String info() {
+        return "user/registerPage";
+    }
+
+    @GetMapping("/initLogin")
+    public ResponseEntity<Map<String, String>> initLogin() {
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("publicKey", userService.getPublicKey());
+        return ResponseEntity.ok(responseBody);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody UserDTO userDTO, HttpServletRequest request, HttpServletResponse response) {
         String tokens = userService.authenticateUser(userDTO.getEmail(), userDTO.getPassword(), request);
@@ -78,7 +91,7 @@ public class UserController {
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
                     // Invalidate the refresh token in Redis
-                    userService.invalidateRefreshToken(cookie.getValue());
+                    userService.deleteRefreshToken(cookie.getValue());
 
                     // Remove the cookie
                     cookie.setValue(null);
