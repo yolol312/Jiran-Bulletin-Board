@@ -15,8 +15,17 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private final AccessTokenManager accessTokenManager = new AccessTokenManager();
-    private final RefreshTokenManager refreshTokenManager = new RefreshTokenManager();
+    private final AccessTokenManager accessTokenManager;
+    private final RefreshTokenManager refreshTokenManager;
+
+    public JwtUtil() {
+        try {
+            this.accessTokenManager = new AccessTokenManager();
+            this.refreshTokenManager = new RefreshTokenManager();
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing TokenManager", e);
+        }
+    }
 
     public AccessToken generateAccessToken(final String email, final Long userId, final String userName, final String role, final String title, final String position, final Object details) {
         Map<String, Object> claims = new HashMap<>();

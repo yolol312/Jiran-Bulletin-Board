@@ -38,7 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        if ("/favicon.ico".equals(request.getRequestURI()) || "/fetch.js".equals(request.getRequestURI()) || "/user/login".equals(request.getRequestURI()) || "/user/register".equals(request.getRequestURI())) {
+        if ("/favicon.ico".equals(request.getRequestURI())
+                || "/fetch.js".equals(request.getRequestURI())
+                || "/user/initLogin".equals(request.getRequestURI())
+                || "/user/login".equals(request.getRequestURI())
+                || "/user/register".equals(request.getRequestURI())) {
             chain.doFilter(request, response);
             return;
         }
