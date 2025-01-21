@@ -1,7 +1,7 @@
-package com.example.jiranbulletinboard.Auth;
+package com.example.jiranbulletinboard;
 
-import com.example.jiranbulletinboard.User.UserDTO;
-import com.example.jiranbulletinboard.User.UserService;
+import com.example.jiranbulletinboard.Domain.User.UserDTO;
+import com.example.jiranbulletinboard.Domain.User.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

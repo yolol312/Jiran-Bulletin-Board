@@ -1,21 +1,11 @@
-package com.example.jiranbulletinboard.Page;
+package com.example.jiranbulletinboard;
 
-import com.example.jiranbulletinboard.Post.PostDTO;
-import com.example.jiranbulletinboard.Post.PostService;
-import com.example.jiranbulletinboard.User.UserDTO;
-import com.example.jiranbulletinboard.User.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.jiranbulletinboard.Domain.Post.PostDTO;
+import com.example.jiranbulletinboard.Domain.Post.PostService;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Controller
@@ -48,7 +38,7 @@ public class PageController {
     }
 
     // 게시글 작성 페이지 불러 오기
-    @GetMapping("/page/write")
+    @GetMapping("/writePost")
     public String writePost() {
         return "post/writePost";
     }

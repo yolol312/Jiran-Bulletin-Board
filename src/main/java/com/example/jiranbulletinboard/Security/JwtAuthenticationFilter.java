@@ -38,6 +38,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private RedisTemplate<String, String> redisTemplate;
 
     private final List<AntPathRequestMatcher> excludedMatchers = List.of(
+            new AntPathRequestMatcher("/api/titles"),
+            new AntPathRequestMatcher("/api/roles"),
+            new AntPathRequestMatcher("/api/positions"),
             new AntPathRequestMatcher("/auth/**"),
             new AntPathRequestMatcher("/user/register"),
             new AntPathRequestMatcher("/page/**"),

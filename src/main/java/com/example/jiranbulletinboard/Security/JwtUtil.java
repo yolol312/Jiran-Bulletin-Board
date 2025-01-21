@@ -27,13 +27,13 @@ public class JwtUtil {
         }
     }
 
-    public AccessToken generateAccessToken(final String email, final Long userId, final String userName, final String role, final String title, final String position, final Object details) {
+    public AccessToken generateAccessToken(final String email, final Integer userId, final String userName, final Integer role, final Integer title, final Integer position, final Object details) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("userName", userName);
-        claims.put("role", role);
-        claims.put("title", title);
-        claims.put("position", position);
+        claims.put("roleId", role);
+        claims.put("titleId", title);
+        claims.put("positionId", position);
         claims.put("details", details);
 
         return accessTokenManager.generateToken(email, claims);

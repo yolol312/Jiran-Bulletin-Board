@@ -1,5 +1,11 @@
-package com.example.jiranbulletinboard.User;
+package com.example.jiranbulletinboard.Domain.User;
 
+import com.example.jiranbulletinboard.Domain.Position.PositionEntity;
+import com.example.jiranbulletinboard.Domain.Position.PositionRepository;
+import com.example.jiranbulletinboard.Domain.Role.RoleEntity;
+import com.example.jiranbulletinboard.Domain.Role.RoleRepository;
+import com.example.jiranbulletinboard.Domain.Title.TitleEntity;
+import com.example.jiranbulletinboard.Domain.Title.TitleRepository;
 import com.example.jiranbulletinboard.Security.JwtUtil;
 import com.example.jiranbulletinboard.Security.SessionToken.AccessToken;
 import com.example.jiranbulletinboard.Security.SessionToken.RefreshToken;
@@ -12,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
 import java.security.*;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Objects;
@@ -23,6 +28,15 @@ import java.util.concurrent.TimeUnit;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TitleRepository titleRepository;
+
+    @Autowired
+    private PositionRepository positionRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -60,6 +74,18 @@ public class UserService {
     }
 
     public void registerUser(UserDTO user) {
+        TitleEntity title = titleRepository.findById(user.getTitle().getTitleId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Title ID"));
+        PositionEntity position = positionRepository.findById(user.getPosition().getPositionId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Position ID"));
+        RoleEntity role = roleRepository.findById(user.getRole().getRoleId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Role ID"));
+
+        // 변환된 Entity를 DTO에 설정
+        user.setTitle(title);
+        user.setPosition(position);
+        user.setRole(role);
+
         // 비밀번호 암호화
         String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
@@ -74,7 +100,7 @@ public class UserService {
 
             UserEntity userEntity = userRepository.findByEmail(email);
             if (userEntity != null && bCryptPasswordEncoder.matches(password, userEntity.getPassword())) {
-                AccessToken accessToken = jwtUtil.generateAccessToken(email, userEntity.getId(), userEntity.getName(), userEntity.getRole(), userEntity.getTitle(), userEntity.getPosition(), request.getRemoteAddr());
+                AccessToken accessToken = jwtUtil.generateAccessToken(email, userEntity.getUserId(), userEntity.getName(), userEntity.getRole().getRoleId(), userEntity.getTitle().getTitleId(), userEntity.getPosition().getPositionId(), request.getRemoteAddr());
                 RefreshToken refreshToken = jwtUtil.generateRefreshToken(email);
                 String refreshTokenKey = UUID.randomUUID().toString();
                 redisTemplate.opsForValue().set(refreshTokenKey, refreshToken.getToken(), 7, TimeUnit.DAYS);
@@ -104,7 +130,7 @@ public class UserService {
         String email = jwtUtil.getSubjectFromToken(refreshToken);
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity != null) {
-            AccessToken newAccessToken = jwtUtil.generateAccessToken(email, userEntity.getId(), userEntity.getName(), userEntity.getRole(), userEntity.getTitle(), userEntity.getPosition(), request.getRemoteAddr());
+            AccessToken newAccessToken = jwtUtil.generateAccessToken(email, userEntity.getUserId(), userEntity.getName(), userEntity.getRole().getRoleId(), userEntity.getTitle().getTitleId(), userEntity.getPosition().getPositionId(), request.getRemoteAddr());
             RefreshToken newRefreshToken = jwtUtil.generateRefreshToken(email);
             String newRefreshTokenKey = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set(newRefreshTokenKey, newRefreshToken.getToken(), 7, TimeUnit.DAYS);

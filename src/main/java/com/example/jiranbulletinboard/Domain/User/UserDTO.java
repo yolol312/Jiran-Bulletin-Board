@@ -1,9 +1,8 @@
-package com.example.jiranbulletinboard.User;
+package com.example.jiranbulletinboard.Domain.User;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.jiranbulletinboard.Domain.Position.PositionEntity;
+import com.example.jiranbulletinboard.Domain.Role.RoleEntity;
+import com.example.jiranbulletinboard.Domain.Title.TitleEntity;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -14,18 +13,18 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UserDTO {
-    private Long id;
+    private Integer userId;
     private String name;
     private String email;
     private String password;
-    private String title;
-    private String position;
-    private String role;
+    private TitleEntity title;
+    private PositionEntity position;
+    private RoleEntity role;
     private LocalDate birthDate;
 
     public UserEntity toEntity() {
         return UserEntity.builder()
-                .id(this.id)
+                .userId(this.userId)
                 .name(this.name)
                 .email(this.email)
                 .password(this.password)

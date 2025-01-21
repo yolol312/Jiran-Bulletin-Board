@@ -1,6 +1,8 @@
-package com.example.jiranbulletinboard.User;
+package com.example.jiranbulletinboard.Domain.User;
 
-import com.example.jiranbulletinboard.InterestTag.InterestTagEntity;
+import com.example.jiranbulletinboard.Domain.Position.PositionEntity;
+import com.example.jiranbulletinboard.Domain.Role.RoleEntity;
+import com.example.jiranbulletinboard.Domain.Title.TitleEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +17,7 @@ import java.time.LocalDate;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer userId;
 
     @Column(nullable = false)
     private String name;
@@ -26,21 +28,24 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "position_code", nullable = false)
+    private PositionEntity position;
 
-    @Column(nullable = false)
-    private String position;
+    @ManyToOne
+    @JoinColumn(name = "title_code", nullable = false)
+    private TitleEntity title;
 
-    @Column(nullable = false)
-    private String role;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private RoleEntity role;
 
     @Column(nullable = false)
     private LocalDate birthDate;
 
     public UserDTO toDTO() {
         return UserDTO.builder()
-                .id(this.id)
+                .userId(this.userId)
                 .email(this.email)
                 .name(this.name)
                 .password(this.password)
