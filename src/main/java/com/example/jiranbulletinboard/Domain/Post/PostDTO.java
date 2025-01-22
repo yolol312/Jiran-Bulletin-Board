@@ -1,10 +1,14 @@
 package com.example.jiranbulletinboard.Domain.Post;
 
 import com.example.jiranbulletinboard.Domain.Category.CategoryEntity;
+import com.example.jiranbulletinboard.Domain.File.FileEntity;
 import com.example.jiranbulletinboard.Domain.User.UserEntity;
 import lombok.*;
 
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,21 +18,32 @@ import java.time.LocalDateTime;
 public class PostDTO {
     private Integer postId;
     private String title;
-    private CategoryEntity category;
+    private Integer categoryId;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UserEntity user;
+    private Boolean isBulletin;
+    private List<Integer> files;
+    private Integer userId;
 
     public PostEntity toEntity() {
+        CategoryEntity categoryEntity = CategoryEntity.builder().categoryId(categoryId).build();
+        UserEntity userEntity = UserEntity.builder().userId(userId).build();
+        List<FileEntity> fileEntities = new ArrayList<>();
+        for (Integer files : this.files) {
+            fileEntities.add(FileEntity.builder().fileId(files).build());
+        }
+
         return PostEntity.builder()
                 .postId(this.postId)
                 .title(this.title)
-                .category(this.category)
+                .category(categoryEntity)
                 .content(this.content)
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
-                .user(this.user)
+                .isBulletin(this.isBulletin)
+                .files(fileEntities)
+                .user(userEntity)
                 .build();
     }
 }

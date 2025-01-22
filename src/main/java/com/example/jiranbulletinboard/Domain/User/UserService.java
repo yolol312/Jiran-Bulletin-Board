@@ -74,18 +74,6 @@ public class UserService {
     }
 
     public void registerUser(UserDTO user) {
-        TitleEntity title = titleRepository.findById(user.getTitle().getTitleId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Title ID"));
-        PositionEntity position = positionRepository.findById(user.getPosition().getPositionId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Position ID"));
-        RoleEntity role = roleRepository.findById(user.getRole().getRoleId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Role ID"));
-
-        // 변환된 Entity를 DTO에 설정
-        user.setTitle(title);
-        user.setPosition(position);
-        user.setRole(role);
-
         // 비밀번호 암호화
         String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);

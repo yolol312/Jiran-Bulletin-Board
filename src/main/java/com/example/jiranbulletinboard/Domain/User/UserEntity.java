@@ -29,11 +29,11 @@ public class UserEntity {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "position_code", nullable = false)
+    @JoinColumn(name = "position_id", nullable = false)
     private PositionEntity position;
 
     @ManyToOne
-    @JoinColumn(name = "title_code", nullable = false)
+    @JoinColumn(name = "title_id", nullable = false)
     private TitleEntity title;
 
     @ManyToOne
@@ -49,9 +49,9 @@ public class UserEntity {
                 .email(this.email)
                 .name(this.name)
                 .password(this.password)
-                .title(this.title)
-                .position(this.position)
-                .role(this.role)
+                .titleId(this.title.getTitleId())
+                .positionId(this.position.getPositionId())
+                .roleId(this.role.getRoleId())
                 .birthDate(this.birthDate)
                 .build();
     }

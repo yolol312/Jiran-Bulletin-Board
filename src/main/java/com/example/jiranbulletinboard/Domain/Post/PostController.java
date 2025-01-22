@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/post")
@@ -20,8 +21,8 @@ public class PostController {
 
     // 특정 게시글 작성
     @PostMapping("/writing")
-    public String createPost(@ModelAttribute PostDTO postDTO) {
-        postService.createPost(postDTO);
+    public String createPost(@ModelAttribute PostDTO postDTO, @RequestParam("files") MultipartFile[] files) {
+        postService.createPost(postDTO, files);
         return "redirect:/post/bulletin";
     }
 

@@ -17,20 +17,24 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
-    private TitleEntity title;
-    private PositionEntity position;
-    private RoleEntity role;
+    private Integer titleId;
+    private Integer positionId;
+    private Integer roleId;
     private LocalDate birthDate;
 
     public UserEntity toEntity() {
+        TitleEntity titleEntity = TitleEntity.builder().titleId(this.titleId).build();
+        PositionEntity positionEntity = PositionEntity.builder().positionId(this.positionId).build();
+        RoleEntity roleEntity = RoleEntity.builder().roleId(this.roleId).build();
+
         return UserEntity.builder()
                 .userId(this.userId)
                 .name(this.name)
                 .email(this.email)
                 .password(this.password)
-                .title(this.title)
-                .position(this.position)
-                .role(this.role)
+                .title(titleEntity)
+                .position(positionEntity)
+                .role(roleEntity)
                 .birthDate(this.birthDate)
                 .build();
     }

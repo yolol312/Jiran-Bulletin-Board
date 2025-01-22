@@ -1,11 +1,14 @@
 package com.example.jiranbulletinboard.Domain.Post;
 
 import com.example.jiranbulletinboard.Domain.Category.CategoryEntity;
+import com.example.jiranbulletinboard.Domain.File.FileEntity;
 import com.example.jiranbulletinboard.Domain.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -35,19 +38,32 @@ public class PostEntity {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_bulletin", nullable = false)
+    private Boolean isBulletin;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<FileEntity> files = new ArrayList<>();
+
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     public PostDTO toDTO() {
+        List<Integer> files = new ArrayList<>();
+        for (FileEntity file : this.files) {
+            files.add(file.getFileId());
+        }
+
         return PostDTO.builder()
                 .postId(this.postId)
                 .title(this.title)
-                .category(this.category)
+                .categoryId(this.category.getCategoryId())
                 .content(this.content)
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
-                .user(this.user)
+                .isBulletin(this.isBulletin)
+                .files(files)
+                .userId(this.user.getUserId())
                 .build();
     }
 }
