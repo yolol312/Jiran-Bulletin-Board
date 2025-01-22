@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Editor with File Preview</title>
+    <script src="/js/fetch.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<style>
+    #content img {
+        max-width: 100%; /* 이미지의 최대 너비를 콘텐츠 영역에 맞춤 */
+        max-height: 400px; /* 최대 높이 지정 */
+        object-fit: contain;
+    }
+</style>
+<body class="bg-gray-100">
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4">Write a Post</h1>
+    <form id="postForm" class="bg-white p-4 rounded shadow" enctype="multipart/form-data">
+        <!-- Title -->
+        <div class="mb-4">
+            <label for="title" class="block text-gray-700">Title</label>
+            <input type="text" id="title" name="title" class="w-full p-2 border border-gray-300 rounded" placeholder="Enter post title">
+        </div>
+        <!-- Category -->
+        <div class="mb-4">
+            <label for="category" class="block text-gray-700">Category</label>
+            <select id="category" name="categoryId" class="w-full p-2 border border-gray-300 rounded"></select>
+        </div>
+        <!-- Content -->
+        <div class="mb-4">
+            <label for="content" class="block text-gray-700">Content</label>
+            <div id="content" class="w-full border border-gray-300 rounded p-2 bg-white"
+                 contenteditable="true" style="min-height: 200px;">
+                <p>Write your post content here...</p>
+            </div>
+        </div>
+        <!-- File Upload -->
+        <div class="mb-4">
+            <label for="fileUpload" class="block text-gray-700">Attach File (Drag & Drop)</label>
+            <div id="fileUpload" class="w-full p-6 border-dashed border-2 border-gray-300 rounded text-center bg-gray-50">
+                Drag & drop files here or click to upload
+                <input type="file" id="fileInput" name="files" class="hidden" multiple>
+            </div>
+            <ul id="fileList" class="mt-4 space-y-2"></ul>
+        </div>
+        <!-- Buttons -->
+        <div class="flex justify-between">
+            <button type="button" id="saveDraft" class="bg-gray-500 text-white px-4 py-2 rounded">임시 저장</button>
+            <button type="submit" id="submitPost" class="bg-blue-500 text-white px-4 py-2 rounded">게시하기</button>
+        </div>
+    </form>
+</div>
+<script>
+    const fileUploadDiv = document.getElementById('fileUpload');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+
+    fileUploadDiv.addEventListener('click', () => fileInput.click());
+
+    fileUploadDiv.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadDiv.classList.add('border-blue-500');
+    });
+
+    fileUploadDiv.addEventListener('dragleave', () => {
+        fileUploadDiv.classList.remove('border-blue-500');
+    });
+
+    fileUploadDiv.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadDiv.classList.remove('border-blue-500');
+        const files = e.dataTransfer.files;
+        handleFiles(files);
+    });
+
+    fileInput.addEventListener('change', () => {
+        const files = fileInput.files;
+        handleFiles(files);
+    });
+
+    // Save Draft Button
+    document.getElementById('saveDraft').addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const formData = savePost(false);
+        try {
+            const response = await fetchWithAuth('/post/writing', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                await loadBulletinPage();
+                alert('Post saved successfully!');
+            } else {
+                alert('Failed to save post.');
+            }
+        } catch (error) {
+            console.error('Error saving post:', error);
+            alert('An error occurred while saving the post.');
+        }
+    });
+
+    // Submit Form
+    document.getElementById('postForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = savePost(true);
+        try {
+            const response = await fetchWithAuth('/post/writing', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                await loadBulletinPage();
+                alert('Post submitted successfully!');
+            } else {
+                alert('Failed to submit post.');
+            }
+        } catch (error) {
+            console.error('Error submitting post:', error);
+            alert('An error occurred while submitting the post.');
+        }
+    });
+
+    // 페이지 로드 시 API 호출 및 콤보박스 채우기
+    window.onload = () => {
+        fetchAndPopulateSelect('/api/category', 'category', 'categoryId', 'categoryName');
+    };
+
+    function savePost(isBulletin) {
+        const title = document.getElementById('title').value;
+        const category = document.getElementById('category').value;
+        const content = document.getElementById('content').innerHTML;
+
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('categoryId', category);
+        formData.append('content', content);
+        formData.append('isBulletin', isBulletin);
+
+        // 세션에서 userId 추출
+        const userId = getUserIdFromToken();
+        if (userId) {
+            formData.append('userId', userId);
+        } else {
+            console.error("User ID could not be retrieved from token.");
+        }
+
+        const files = document.getElementById('fileInput').files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('multipartFiles', files[i]);
+        }
+        return formData;
+    }
+
+    function handleFiles(files) {
+        for (const file of files) {
+            const listItem = document.createElement('li');
+            listItem.classList.add('flex', 'items-center', 'space-x-4', 'p-2', 'border', 'border-gray-300', 'rounded');
+
+            // If file is an image, show thumbnail
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.alt = file.name;
+                img.classList.add('w-16', 'h-16', 'object-cover', 'rounded');
+                listItem.appendChild(img);
+            } else {
+                // Otherwise, show file icon
+                const icon = document.createElement('div');
+                icon.textContent = '📄';
+                icon.classList.add('text-2xl');
+                listItem.appendChild(icon);
+            }
+
+            // Add file name
+            const fileName = document.createElement('span');
+            fileName.textContent = file.name;
+            listItem.appendChild(fileName);
+
+            // Append to file list
+            fileList.appendChild(listItem);
+        }
+    }
+
+    async function fetchAndPopulateSelect(url, selectId, idField, textField) {
+        try {
+            const response = await fetch(url); // API 호출
+            if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+
+            const data = await response.json(); // JSON 데이터 파싱
+            const select = document.getElementById(selectId);
+
+            // 데이터로 옵션 추가
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item[idField]; // valueField를 value로 설정
+                option.textContent = item[textField]; // textField를 표시
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error(`Error populating ${selectId}:`, error);
+        }
+    }
+
+    function getUserIdFromToken() {
+        const token = sessionStorage.getItem('accessToken');
+        if (!token) return null;
+
+        // 토큰을 '.' 기준으로 나누어 payload 부분 추출
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // JWT Base64 URL 인코딩 복원
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        // JSON 객체로 변환하여 userId 반환
+        const payload = JSON.parse(jsonPayload);
+        return payload.userId; // userId를 반환
+    }
+    async function loadBulletinPage() {
+        try {
+            window.location.href = "/page/bulletinBoard";
+        } catch (error) {
+            console.error('Error fetching bulletin page:', error);
+        }
+    }
+</script>
+</body>
+</html>
