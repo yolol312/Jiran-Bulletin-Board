@@ -1,8 +1,8 @@
 package com.example.jiranbulletinboard.Domain.User;
 
-import com.example.jiranbulletinboard.Domain.Position.PositionEntity;
-import com.example.jiranbulletinboard.Domain.Role.RoleEntity;
-import com.example.jiranbulletinboard.Domain.Title.TitleEntity;
+import com.example.jiranbulletinboard.Domain.Vo.Position.PositionEntity;
+import com.example.jiranbulletinboard.Domain.Vo.Role.RoleEntity;
+import com.example.jiranbulletinboard.Domain.Vo.Title.TitleEntity;
 import lombok.*;
 
 import java.time.LocalDate;

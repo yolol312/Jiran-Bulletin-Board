@@ -25,13 +25,16 @@ public class PostController {
         return postService.findPost(page, size, categoryId, keyword);
     }
 
-    /*
-    @GetMapping("/find")
-    public ResponseEntity<Page<PostDetails>> getPostsWithDetails(@RequestParam Integer page, @RequestParam Integer size) {
-        Page<PostDetails> postsWithDetails = postService.findPost(page, size);
-        return ResponseEntity.ok(postsWithDetails);
+    @GetMapping("/view/{postId}")
+    public ResponseEntity<PostDTO> getPostById(@PathVariable Integer postId) {
+        PostDTO postDTO = postService.selectPost(postId);
+        if (postDTO != null) {
+            return ResponseEntity.ok(postDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-    */
+
     // 특정 게시글 작성
     @PostMapping("/writing")
     public void createPost(@ModelAttribute PostDTO postDTO, @RequestParam("multipartFiles") MultipartFile[] multipartFiles) {

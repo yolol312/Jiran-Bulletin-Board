@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Role;
+package com.example.jiranbulletinboard.Domain.Vo.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

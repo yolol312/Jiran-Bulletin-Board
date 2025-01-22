@@ -35,4 +35,11 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
             "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<PostDetails> findPostsByKeyword(Pageable pageable, String keyword);
+
+    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
+            "FROM PostEntity p " +
+            "JOIN UserEntity u ON p.user.userId = u.userId " +
+            "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
+            "WHERE p.postId = :postId")
+    PostDetails findPostDetailsByPostId(Integer postId);
 }

@@ -1,11 +1,5 @@
 package com.example.jiranbulletinboard.Domain.User;
 
-import com.example.jiranbulletinboard.Domain.Position.PositionEntity;
-import com.example.jiranbulletinboard.Domain.Position.PositionRepository;
-import com.example.jiranbulletinboard.Domain.Role.RoleEntity;
-import com.example.jiranbulletinboard.Domain.Role.RoleRepository;
-import com.example.jiranbulletinboard.Domain.Title.TitleEntity;
-import com.example.jiranbulletinboard.Domain.Title.TitleRepository;
 import com.example.jiranbulletinboard.Security.JwtUtil;
 import com.example.jiranbulletinboard.Security.SessionToken.AccessToken;
 import com.example.jiranbulletinboard.Security.SessionToken.RefreshToken;

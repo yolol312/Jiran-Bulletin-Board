@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Title;
+package com.example.jiranbulletinboard.Domain.Vo.Title;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

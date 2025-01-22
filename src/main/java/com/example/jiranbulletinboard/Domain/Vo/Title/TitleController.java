@@ -1,7 +1,5 @@
-package com.example.jiranbulletinboard.Domain.Title;
+package com.example.jiranbulletinboard.Domain.Vo.Title;
 
-import com.example.jiranbulletinboard.Domain.Title.TitleEntity;
-import com.example.jiranbulletinboard.Domain.Title.TitleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

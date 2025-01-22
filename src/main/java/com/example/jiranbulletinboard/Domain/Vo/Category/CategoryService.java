@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Category;
+package com.example.jiranbulletinboard.Domain.Vo.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

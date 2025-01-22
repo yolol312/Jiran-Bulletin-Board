@@ -1,8 +1,14 @@
 package com.example.jiranbulletinboard;
 
 import com.example.jiranbulletinboard.Domain.Post.PostDTO;
+import com.example.jiranbulletinboard.Domain.Post.PostDetails;
 import com.example.jiranbulletinboard.Domain.Post.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/page")
 public class PageController {
+    @Autowired
     private final PostService postService;
+
+    //@Autowired
+    //private PagedResourcesAssembler<PostDetails> pagedResourcesAssembler;
 
     public PageController(PostService postService) {
         this.postService = postService;
@@ -29,11 +39,7 @@ public class PageController {
 
     // 게시판 페이지 불러 오기
     @GetMapping("/bulletinBoard")
-    public String bulletin(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
-        //Page<PostDTO> posts = postService.findPost(page, size);
-        //model.addAttribute("posts", posts.getContent());
-        //model.addAttribute("currentPage", page);
-        //model.addAttribute("totalPages", posts.getTotalPages());
+    public String bulletin() {
         return "postPage/bulletinBoard";
     }
 
@@ -42,4 +48,20 @@ public class PageController {
     public String writePost() {
         return "postPage/writePost";
     }
+
+
+    @GetMapping("/view/{postId}")
+    public String viewPost(@RequestParam Integer postId, Model model) {
+        PostDetails postDetails = postService.selectPostDetail(postId);
+        model.addAttribute("post", postDetails);
+        return "postPage/detailPage";
+    }
+    /* 제공 해준 코드
+    @GetMapping("/view")
+    public ResponseEntity<PagedModel<PostDetails>> getPostsWithDetails(@RequestParam Integer page, @RequestParam Integer size) {
+        Page<PostDetails> postsWithDetails = postService.findPost(page, size);
+        PagedModel<PostDetails> pagedModel = pagedResourcesAssembler.toModel(postsWithDetails, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PageController.class).getPostsWithDetails(page, size)).withSelfRel());
+        return ResponseEntity.ok(pagedModel);
+    }
+     */
 }

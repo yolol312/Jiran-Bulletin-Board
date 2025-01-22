@@ -1,11 +1,10 @@
 package com.example.jiranbulletinboard.Domain.Post;
 
-import com.example.jiranbulletinboard.Domain.Category.CategoryEntity;
-import com.example.jiranbulletinboard.Domain.Category.CategoryRepository;
+import com.example.jiranbulletinboard.Domain.Vo.Category.CategoryEntity;
+import com.example.jiranbulletinboard.Domain.Vo.Category.CategoryRepository;
 import com.example.jiranbulletinboard.Domain.File.FileEntity;
 import com.example.jiranbulletinboard.Domain.User.UserEntity;
 import com.example.jiranbulletinboard.Domain.User.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,9 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class PostService {
@@ -140,6 +137,11 @@ public class PostService {
         PostEntity postEntity = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
         return postEntity.toDTO();
     }
+
+    public PostDetails selectPostDetail(Integer id) {
+        return postRepository.findPostDetailsByPostId(id);
+    }
+
 
     public PostDTO updatePost(Integer id, PostDTO postDTO) {
         PostEntity postEntity = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));

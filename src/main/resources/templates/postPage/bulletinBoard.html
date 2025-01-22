@@ -36,7 +36,7 @@
                 const postElement = document.createElement('li');
                 postElement.className = 'bg-white p-4 mb-4 rounded shadow';
                 postElement.innerHTML = `
-                    <h2 class="text-xl font-bold">[${post.categoryName}] ${post.title}</h2>
+                    <h2 class="text-xl font-bold cursor-pointer text-black-500" onclick="onPostClick(${post.postId})">[${post.categoryName}] ${post.title}</h2>
                     <p class="text-gray-700">작성자 : ${post.userName} / 작성일자 : ${post.createdAt.split('T')[0]}</p>
                 `;
                 postsContainer.appendChild(postElement);
@@ -82,6 +82,10 @@
             const categoryId = document.getElementById('category').value;
             const keyword = document.querySelector('[name="keyword"]').value;
             fetchPosts(0, categoryId, keyword);  // 0은 첫 번째 페이지
+        }
+
+        function onPostClick(postId) {
+            window.location.href = `/page/view?postId=${postId}`;
         }
 
         document.addEventListener('DOMContentLoaded', () => {

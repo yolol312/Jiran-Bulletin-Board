@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Category;
+package com.example.jiranbulletinboard.Domain.Vo.Category;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

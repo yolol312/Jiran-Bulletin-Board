@@ -1,7 +1,6 @@
-package com.example.jiranbulletinboard.Domain.Role;
+package com.example.jiranbulletinboard.Domain.Vo.Position;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/roles")
-public class RoleController {
+@RequestMapping("/api/positions")
+public class PositionController {
 
     @Autowired
-    private RoleService roleService;
+    private PositionService positionService;
 
     @GetMapping
-    public List<RoleEntity> getAllRoles() {
-        return roleService.getAllRoles();
+    public List<PositionEntity> getAllPositions() {
+        return positionService.getAllPositions();
     }
 }

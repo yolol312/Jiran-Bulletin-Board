@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Title;
+package com.example.jiranbulletinboard.Domain.Vo.Title;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,5 @@
-package com.example.jiranbulletinboard.Domain.Position;
+package com.example.jiranbulletinboard.Domain.Vo.Position;
 
-import com.example.jiranbulletinboard.Domain.Title.TitleEntity;
-import com.example.jiranbulletinboard.Domain.Title.TitleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

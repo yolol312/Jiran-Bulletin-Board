@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Role;
+package com.example.jiranbulletinboard.Domain.Vo.Role;
 
 import lombok.*;
 

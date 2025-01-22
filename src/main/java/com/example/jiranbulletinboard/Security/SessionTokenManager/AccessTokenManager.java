@@ -1,5 +1,6 @@
 package com.example.jiranbulletinboard.Security.SessionTokenManager;
 
+import com.example.jiranbulletinboard.Constant.ErrorMessage;
 import com.example.jiranbulletinboard.Security.SessionToken.AccessToken;
 import com.example.jiranbulletinboard.Security.SessionToken.SessionToken;
 import io.jsonwebtoken.Claims;
@@ -10,13 +11,13 @@ import java.util.Date;
 import java.util.Map;
 
 public class AccessTokenManager implements SessionTokenManager {
-    private final String secret = "your_secret_key1"; // Use a strong secret key
-    private final long jwtExpirationInMs = 3600000; // 1 hour
+    private final String secret = "your_secret_key1"; // 나중에 키 생성해서 넣기
+    private final long jwtExpirationInMs = 3600000;
 
     @Override
     public AccessToken generateToken(String key, Object data) {
         if (!(data instanceof Map)) {
-            throw new IllegalArgumentException("Data must be of type Map<String, Object>");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_INPUT_TOKEN_DATA_TYPE);
         }
         Map<String, Object> dataMap = (Map<String, Object>) data;
 
@@ -35,7 +36,7 @@ public class AccessTokenManager implements SessionTokenManager {
             Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token.getToken());
             return true;
         } catch (Exception e) {
-            return false;
+            throw new IllegalArgumentException(ErrorMessage.INVALID_INPUT_TOKEN_DATA);
         }
     }
 
