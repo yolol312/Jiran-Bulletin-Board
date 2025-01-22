@@ -30,15 +30,6 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private TitleRepository titleRepository;
-
-    @Autowired
-    private PositionRepository positionRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
@@ -88,7 +79,7 @@ public class UserService {
 
             UserEntity userEntity = userRepository.findByEmail(email);
             if (userEntity != null && bCryptPasswordEncoder.matches(password, userEntity.getPassword())) {
-                AccessToken accessToken = jwtUtil.generateAccessToken(email, userEntity.getUserId(), userEntity.getName(), userEntity.getRole().getRoleId(), userEntity.getTitle().getTitleId(), userEntity.getPosition().getPositionId(), request.getRemoteAddr());
+                AccessToken accessToken = jwtUtil.generateAccessToken(email, userEntity.getUserId(), userEntity.getUserName(), userEntity.getRole().getRoleId(), userEntity.getTitle().getTitleId(), userEntity.getPosition().getPositionId(), request.getRemoteAddr());
                 RefreshToken refreshToken = jwtUtil.generateRefreshToken(email);
                 String refreshTokenKey = UUID.randomUUID().toString();
                 redisTemplate.opsForValue().set(refreshTokenKey, refreshToken.getToken(), 7, TimeUnit.DAYS);
@@ -118,7 +109,7 @@ public class UserService {
         String email = jwtUtil.getSubjectFromToken(refreshToken);
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity != null) {
-            AccessToken newAccessToken = jwtUtil.generateAccessToken(email, userEntity.getUserId(), userEntity.getName(), userEntity.getRole().getRoleId(), userEntity.getTitle().getTitleId(), userEntity.getPosition().getPositionId(), request.getRemoteAddr());
+            AccessToken newAccessToken = jwtUtil.generateAccessToken(email, userEntity.getUserId(), userEntity.getUserName(), userEntity.getRole().getRoleId(), userEntity.getTitle().getTitleId(), userEntity.getPosition().getPositionId(), request.getRemoteAddr());
             RefreshToken newRefreshToken = jwtUtil.generateRefreshToken(email);
             String newRefreshTokenKey = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set(newRefreshTokenKey, newRefreshToken.getToken(), 7, TimeUnit.DAYS);

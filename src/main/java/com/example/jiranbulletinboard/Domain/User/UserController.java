@@ -17,7 +17,7 @@ public class UserController {
     //사용자 정보 불러 오기(토큰에 있는 ID or Email로)
     @GetMapping("/info")
     public String info() {
-        return "user/registerPage";
+        return " ";
     }
 
     @PostMapping("/register")

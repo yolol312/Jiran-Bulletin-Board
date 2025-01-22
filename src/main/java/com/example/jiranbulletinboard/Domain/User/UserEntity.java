@@ -20,7 +20,7 @@ public class UserEntity {
     private Integer userId;
 
     @Column(nullable = false)
-    private String name;
+    private String userName;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -47,7 +47,7 @@ public class UserEntity {
         return UserDTO.builder()
                 .userId(this.userId)
                 .email(this.email)
-                .name(this.name)
+                .userName(this.userName)
                 .password(this.password)
                 .titleId(this.title.getTitleId())
                 .positionId(this.position.getPositionId())

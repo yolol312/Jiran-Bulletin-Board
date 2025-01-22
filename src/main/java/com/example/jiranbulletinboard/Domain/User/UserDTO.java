@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserDTO {
     private Integer userId;
-    private String name;
+    private String userName;
     private String email;
     private String password;
     private Integer titleId;
@@ -29,7 +29,7 @@ public class UserDTO {
 
         return UserEntity.builder()
                 .userId(this.userId)
-                .name(this.name)
+                .userName(this.userName)
                 .email(this.email)
                 .password(this.password)
                 .title(titleEntity)
