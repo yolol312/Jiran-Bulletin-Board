@@ -19,27 +19,27 @@ public class PageController {
 
     @GetMapping("/login")
     public String login() {
-        return "user/loginPage";
+        return "userPage/loginPage";
     }
 
     @GetMapping("/register")
     public String register() {
-        return "user/registerPage";
+        return "userPage/registerPage";
     }
 
     // 게시판 페이지 불러 오기
     @GetMapping("/bulletinBoard")
     public String bulletin(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, Model model) {
-        Page<PostDTO> posts = postService.findPost(page, size);
-        model.addAttribute("posts", posts.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", posts.getTotalPages());
-        return "post/bulletinBoard";
+        //Page<PostDTO> posts = postService.findPost(page, size);
+        //model.addAttribute("posts", posts.getContent());
+        //model.addAttribute("currentPage", page);
+        //model.addAttribute("totalPages", posts.getTotalPages());
+        return "postPage/bulletinBoard";
     }
 
     // 게시글 작성 페이지 불러 오기
     @GetMapping("/writePost")
     public String writePost() {
-        return "post/writePost";
+        return "postPage/writePost";
     }
 }
