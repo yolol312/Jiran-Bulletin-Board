@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Vo.Title;
+package com.example.jiranbulletinboard.Domain.Title;
 
 
 import lombok.*;

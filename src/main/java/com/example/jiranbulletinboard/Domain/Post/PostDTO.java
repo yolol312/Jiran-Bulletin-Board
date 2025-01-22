@@ -1,6 +1,6 @@
 package com.example.jiranbulletinboard.Domain.Post;
 
-import com.example.jiranbulletinboard.Domain.Vo.Category.CategoryEntity;
+import com.example.jiranbulletinboard.Domain.Category.CategoryEntity;
 import com.example.jiranbulletinboard.Domain.File.FileEntity;
 import com.example.jiranbulletinboard.Domain.User.UserEntity;
 import lombok.*;

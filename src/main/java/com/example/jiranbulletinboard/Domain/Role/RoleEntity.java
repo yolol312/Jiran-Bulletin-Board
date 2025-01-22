@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Vo.Role;
+package com.example.jiranbulletinboard.Domain.Role;
 
 import jakarta.persistence.*;
 import lombok.*;

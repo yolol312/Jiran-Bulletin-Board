@@ -1,165 +1,27 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- JQuery -->
-    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
-    <!-- Bootstrap JS -->
-    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.min.js}"></script>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
-    <!-- User CSS -->
-<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">-->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
-    <meta name="author" content="AdminKit">
-    <meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="shortcut icon" href="img/icons/icon-48x48.png" />
-
-    <link rel="canonical" href="https://demo-basic.adminkit.io/" />
-
-    <title>AdminKit Demo - Bootstrap 5 Admin Template</title>
-
-    <link th:href="@{/css/app.css}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Example</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
-<style>
-    .wrapper {
-        display: flex;
-        min-height: 100vh;
-    }
+<body class="bg-gray-100">
+<!-- 상단 네비게이션 바 -->
+<nav th:replace="~{common/navbar :: navbarFragment}" class="bg-white shadow-md p-4"></nav>
 
-    .content {
-        flex-grow: 1;
-        padding: 20px;
-        background-color: #f4f6fa;
-        transition: margin-left 0.3s ease; /* 사이드바가 열리고 닫힐 때 본문 영역이 부드럽게 이동 */
-    }
+<div class="flex min-h-screen">
+    <!-- 왼쪽 사이드바 -->
+    <nav th:replace="~{common/leftSideBar :: sidebarFragment}" class="bg-gray-800 text-white w-1/5 p-4"></nav>
 
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: -250px; /* 사이드바 숨기기 */
-        width: 250px;
-        height: 100%;
-        background-color: #343a40;
-        transition: left 0.3s ease; /* 부드럽게 열릴 때 부드럽게 움직이도록 설정 */
-    }
-
-    .sidebar a {
-        text-decoration: none;
-    }
-
-    .sidebar a:hover {
-        text-decoration: none; /* 커서를 올려도 밑줄 제거 */
-    }
-
-    /* 사이드바가 열렸을 때 */
-    .sidebar.open {
-        left: 0; /* 사이드바 열기 */
-    }
-
-    .dropdown-menu-custom{
-        width: 325px;
-    }
-    .table-background{
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background: white;
-    }
-</style>
-<body style="background-color:#f4f6fa">
-    <!-- 메인 레이아웃 -->
-    <div class="wrapper d-flex">
-        <!-- 왼쪽 사이드바 -->
-        <nav th:replace="~{common/leftSideBar :: sidebarFragment}"></nav>
-
-        <!-- 메인 콘텐츠 영역 -->
-        <div class="content flex-grow-1">
-            <!-- 상단 네비게이션 바 -->
-            <nav th:replace="~{common/navbar :: navbarFragment}"></nav>
-
-            <!-- 페이지별 콘텐츠 -->
-            <main class="container-fluid">
-                <th:block layout:fragment="content"></th:block>
-            </main>
-        </div>
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="flex-grow">
+        <!-- 페이지별 콘텐츠 -->
+        <main class="p-6">
+            <th:block layout:fragment="content"></th:block>
+        </main>
     </div>
-
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <symbol id="check-circle-fill" viewBox="0 0 16 16">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-        </symbol>
-        <symbol id="info-fill" viewBox="0 0 16 16">
-            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-        </symbol>
-        <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
-            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-        </symbol>
-        <symbol id="chevron-down" viewBox="0 0 16 16">
-            <path d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
-        </symbol>
-        <symbol id="chevron-up" viewBox="0 0 16 16">
-            <path d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
-        </symbol>
-        <symbol id="lightning-charge-fill" viewBox="0 0 16 16">
-            <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
-        </symbol>
-        <symbol id="check-circle-fill" viewBox="0 0 16 16">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-        </symbol>
-        <symbol id="file-earmark-text-fill" viewBox="0 0 16 16">
-            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1z"/>
-        </symbol>
-        <symbol id="star-fill" viewBox="0 0 16 16">
-            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-        </symbol>
-    </svg>
+</div>
 </body>
-<script>
-    document.querySelector('.js-sidebar-toggle').addEventListener('click', function() {
-        const sidebar = document.querySelector('.sidebar');
-        const content = document.querySelector('.content');
-
-        // 사이드바에 'open' 클래스를 토글
-        sidebar.classList.toggle('open');
-
-        // 사이드바가 열렸는지 확인하고 본문 영역의 너비를 조정
-        if (sidebar.classList.contains('open')) {
-            content.style.marginLeft = '250px';  // 사이드바가 열리면 본문을 밀어냄
-        } else {
-            content.style.marginLeft = '0';  // 사이드바가 닫히면 본문을 원래대로 돌림
-        }
-    });
-    document.querySelector('#alertsDropdown').addEventListener('click', function(event) {
-        // 이미 열려있는 상태에서 다시 클릭하면 닫히도록 처리
-        const dropdownMenu = document.querySelector('#alertsDropdown + .dropdown-menu');
-
-        // 메뉴가 열린 상태에서 클릭 시, 닫히도록 toggle
-        if (dropdownMenu.classList.contains('show')) {
-            dropdownMenu.classList.remove('show');
-        } else {
-            dropdownMenu.classList.add('show');
-        }
-
-        // 클릭한 요소의 기본 동작을 막기 위한 event.stopPropagation() 추가
-        event.stopPropagation();
-    });
-
-    // 클릭 시 드롭다운 외부 클릭 시 닫히게 처리
-    document.addEventListener('click', function(event) {
-        const dropdownMenu = document.querySelector('#alertsDropdown + .dropdown-menu');
-
-        // 드롭다운 외부 클릭 시 메뉴 닫기
-        if (!dropdownMenu.contains(event.target) && !event.target.matches('#alertsDropdown')) {
-            dropdownMenu.classList.remove('show');
-        }
-    });
-</script>
 </html>

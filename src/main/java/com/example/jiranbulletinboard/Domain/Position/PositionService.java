@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Vo.Position;
+package com.example.jiranbulletinboard.Domain.Position;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

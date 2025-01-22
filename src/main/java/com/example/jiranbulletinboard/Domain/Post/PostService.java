@@ -1,10 +1,8 @@
 package com.example.jiranbulletinboard.Domain.Post;
 
-import com.example.jiranbulletinboard.Domain.Vo.Category.CategoryEntity;
-import com.example.jiranbulletinboard.Domain.Vo.Category.CategoryRepository;
+import com.example.jiranbulletinboard.Domain.Category.CategoryEntity;
 import com.example.jiranbulletinboard.Domain.File.FileEntity;
 import com.example.jiranbulletinboard.Domain.User.UserEntity;
-import com.example.jiranbulletinboard.Domain.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,37 +22,29 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    /*public Page<PostDTO> findPost(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PostEntity> postEntities = postRepository.findAll(pageable);
-        return postEntities.map(PostEntity::toDTO);
-    }
-     */
-
-    public Page<PostDetails> findPost(Integer page, Integer size, Integer categoryId, String keyword) {
+    public Page<PostDetails> findPost(Integer page, Integer size, Integer categoryId, String keyword, Boolean isBulletin) {
         Pageable pageable = PageRequest.of(page, size);
 
         // categoryId와 keyword가 있는 경우, 둘 다 필터링
         if (categoryId != null && keyword != null && !keyword.isEmpty()) {
-            return postRepository.findPostsWithDetails(pageable, categoryId, keyword);
+            return postRepository.findPostsWithDetails(pageable, categoryId, keyword, isBulletin);
         }
         // categoryId가 있을 경우, 카테고리만 필터링
         else if (categoryId != null) {
-            return postRepository.findPostsByCategory(pageable, categoryId);
+            return postRepository.findPostsByCategory(pageable, categoryId, isBulletin);
         }
         // keyword가 있을 경우, 제목으로만 필터링
         else if (keyword != null && !keyword.isEmpty()) {
-            return postRepository.findPostsByKeyword(pageable, keyword);
+            return postRepository.findPostsByKeyword(pageable, keyword, isBulletin);
         }
 
         // 기본적으로 모든 게시글 조회
-        return postRepository.findPostsWithDetails(pageable, null, null);
+        return postRepository.findPostsWithDetails(pageable, null, null, isBulletin);
+    }
+
+    public Page<PostDetails> findPostMy(Integer page, Integer size, Integer userId, Integer categoryId, String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
+        return postRepository.findPostsByUserId(pageable, userId, categoryId, keyword);
     }
 
     /* 나중에 시간 되면 여러 단어로도 검색이 가능하게 만들기
@@ -138,26 +128,52 @@ public class PostService {
         return postEntity.toDTO();
     }
 
+    public PostEntity selectPostEntity(Integer id) {
+        return postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+    }
+
     public PostDetails selectPostDetail(Integer id) {
         return postRepository.findPostDetailsByPostId(id);
     }
 
-
-    public PostDTO updatePost(Integer id, PostDTO postDTO) {
+    public void updatePost(Integer id, PostDTO postDTO, MultipartFile[] multipartFiles) {
         PostEntity postEntity = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
         CategoryEntity categoryEntity = CategoryEntity.builder().categoryId(postDTO.getCategoryId()).build();
-        List<FileEntity> fileEntity = new ArrayList<>();
-        for (Integer file : postDTO.getFiles()) {
-            fileEntity.add(FileEntity.builder().fileId(file).build());
+        List<FileEntity> fileEntities = new ArrayList<>();
+        for (MultipartFile file : multipartFiles) {
+            if (!file.isEmpty()) {
+                try {
+                    // 예: 로컬 디렉토리에 저장
+                    String uploadDir = "C:/uploads/" + postDTO.getUserId() + "/" + id;
+                    // 디렉토리 경로 생성
+                    File directory = new File(uploadDir);
+                    // 디렉토리가 존재하지 않으면 생성
+                    if (!directory.exists()) {
+                        directory.mkdirs(); // 상위 디렉토리 포함해서 생성
+                    }
+                    String filePath = uploadDir + "/" + file.getOriginalFilename();
+
+                    file.transferTo(new File(filePath));
+
+                    FileEntity fileEntity = FileEntity.builder()
+                            .fileName(file.getOriginalFilename())
+                            .filePath(filePath)
+                            .post(postEntity)
+                            .build();
+
+                    fileEntities.add(fileEntity);
+                } catch (IOException e) {
+                    throw new RuntimeException("파일 저장 중 오류 발생", e);
+                }
+            }
         }
 
         postEntity.setTitle(postDTO.getTitle());
         postEntity.setCategory(categoryEntity);
         postEntity.setContent(postDTO.getContent());
         postEntity.setIsBulletin(postDTO.getIsBulletin());
-        postEntity.setFiles(fileEntity);
-        PostEntity updatedPost = postRepository.save(postEntity);
-        return updatedPost.toDTO();
+        postEntity.setFiles(fileEntities);
+        postRepository.save(postEntity);
     }
 
     public void deletePost(Integer id) {

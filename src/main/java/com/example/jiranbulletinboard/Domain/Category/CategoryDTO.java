@@ -1,4 +1,4 @@
-package com.example.jiranbulletinboard.Domain.Vo.Category;
+package com.example.jiranbulletinboard.Domain.Category;
 
 import lombok.*;
 

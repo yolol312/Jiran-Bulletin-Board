@@ -16,13 +16,24 @@ public class PostController {
     private PostService postService;
 
     // 게시글 불러 오기
-    @GetMapping("/find/all")
+    @GetMapping("/find")
     public Page<PostDetails> findPostAll(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "true") Boolean isBulletin,
             @RequestParam(required = false) Integer categoryId,
             @RequestParam(required = false) String keyword) {
-        return postService.findPost(page, size, categoryId, keyword);
+        return postService.findPost(page, size, categoryId, keyword, isBulletin);
+    }
+
+    @GetMapping("/find/my")
+    public Page<PostDetails> findPostMy(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam Integer userId,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) String keyword) {
+        return postService.findPostMy(page, size, userId, categoryId, keyword);
     }
 
     @GetMapping("/view/{postId}")
@@ -49,8 +60,8 @@ public class PostController {
 
     // 특정 게시글 수정(Only 작성자)
     @PutMapping("/writing/{id}")
-    public void updatePost(@PathVariable Integer id, @ModelAttribute PostDTO postDTO) {
-        postService.updatePost(id, postDTO);
+    public void updatePost(@PathVariable Integer id, @ModelAttribute PostDTO postDTO, @RequestParam("multipartFiles") MultipartFile[] multipartFiles) {
+        postService.updatePost(id, postDTO, multipartFiles);
     }
 
     // 특정 게시글 삭제(Only 작성자)

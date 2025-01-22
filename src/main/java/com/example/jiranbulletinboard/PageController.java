@@ -1,31 +1,23 @@
 package com.example.jiranbulletinboard;
 
+import com.example.jiranbulletinboard.Domain.File.FileDTO;
 import com.example.jiranbulletinboard.Domain.Post.PostDTO;
 import com.example.jiranbulletinboard.Domain.Post.PostDetails;
-import com.example.jiranbulletinboard.Domain.Post.PostService;
+import com.example.jiranbulletinboard.Domain.Post.PostFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 
 @Controller
 @RequestMapping("/page")
 public class PageController {
     @Autowired
-    private final PostService postService;
-
-    //@Autowired
-    //private PagedResourcesAssembler<PostDetails> pagedResourcesAssembler;
-
-    public PageController(PostService postService) {
-        this.postService = postService;
-    }
+    private PostFacadeService postFacadeService;
 
     @GetMapping("/login")
     public String login() {
@@ -49,19 +41,26 @@ public class PageController {
         return "postPage/writePost";
     }
 
+    @GetMapping("/writePost/{postId}")
+    public String writePost(@PathVariable("postId") Integer postId, Model model) {
+        PostDTO postDTO = postFacadeService.selectPost(postId);
+        List<FileDTO> fileDTOs = postFacadeService.selectFileByPostId(postId);
+        model.addAttribute("post", postDTO);
+        model.addAttribute("files", fileDTOs);
+        return "postPage/modifyPost";
+    }
+
+    @GetMapping("/myPost")
+    public String myPost() {
+        return "postPage/myPost";
+    }
 
     @GetMapping("/view/{postId}")
-    public String viewPost(@RequestParam Integer postId, Model model) {
-        PostDetails postDetails = postService.selectPostDetail(postId);
+    public String viewPost(@PathVariable("postId") Integer postId, Model model) {
+        PostDetails postDetails = postFacadeService.selectPostDetail(postId);
+        List<FileDTO> fileDTOs = postFacadeService.selectFileByPostId(postId);
         model.addAttribute("post", postDetails);
+        model.addAttribute("files", fileDTOs);
         return "postPage/detailPage";
     }
-    /* 제공 해준 코드
-    @GetMapping("/view")
-    public ResponseEntity<PagedModel<PostDetails>> getPostsWithDetails(@RequestParam Integer page, @RequestParam Integer size) {
-        Page<PostDetails> postsWithDetails = postService.findPost(page, size);
-        PagedModel<PostDetails> pagedModel = pagedResourcesAssembler.toModel(postsWithDetails, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PageController.class).getPostsWithDetails(page, size)).withSelfRel());
-        return ResponseEntity.ok(pagedModel);
-    }
-     */
 }

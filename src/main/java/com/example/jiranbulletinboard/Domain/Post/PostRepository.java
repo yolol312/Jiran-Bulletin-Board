@@ -17,24 +17,26 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
             "WHERE (:categoryId IS NULL OR p.category.categoryId = :categoryId) " +
-            "AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) ")
-    Page<PostDetails> findPostsWithDetails(Pageable pageable, Integer categoryId, String keyword);
+            "AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))" +
+            "AND p.isBulletin = true")
+    Page<PostDetails> findPostsWithDetails(Pageable pageable, Integer categoryId, String keyword, Boolean isBulletin);
 
     // 카테고리로 필터링된 게시글 조회
     @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
             "FROM PostEntity p " +
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
-            "WHERE p.category.categoryId = :categoryId")
-    Page<PostDetails> findPostsByCategory(Pageable pageable, Integer categoryId);
+            "WHERE p.category.categoryId = :categoryId AND p.isBulletin = true")
+    Page<PostDetails> findPostsByCategory(Pageable pageable, Integer categoryId, Boolean isBulletin);
 
     // 제목으로 필터링된 게시글 조회
     @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
             "FROM PostEntity p " +
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
-            "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<PostDetails> findPostsByKeyword(Pageable pageable, String keyword);
+            "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))" +
+            "AND p.isBulletin = true")
+    Page<PostDetails> findPostsByKeyword(Pageable pageable, String keyword, Boolean isBulletin);
 
     @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
             "FROM PostEntity p " +
@@ -42,4 +44,13 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
             "WHERE p.postId = :postId")
     PostDetails findPostDetailsByPostId(Integer postId);
+
+    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
+            "FROM PostEntity p " +
+            "JOIN UserEntity u ON p.user.userId = u.userId " +
+            "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
+            "WHERE (:categoryId IS NULL OR p.category.categoryId = :categoryId) " +
+            "AND (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))" +
+            "AND p.user.userId = :userId")
+    Page<PostDetails> findPostsByUserId(Pageable pageable, Integer userId, Integer categoryId, String keyword);
 }
