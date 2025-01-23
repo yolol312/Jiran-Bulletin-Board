@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +15,7 @@
     }
 </style>
 <body class="bg-gray-100">
-<div class="container mx-auto p-6">
+<div layout:fragment="content" class="container mx-auto p-6">
     <h1 class="text-3xl font-bold mb-4" th:text="'Modify Post - ' + ${post.title}">Modify Post</h1>
     <form id="postForm" class="bg-white p-4 rounded shadow" enctype="multipart/form-data" method="post">
         <!-- Title -->
@@ -43,7 +43,13 @@
                 Drag & drop files here or click to upload
                 <input type="file" id="fileInput" name="files" class="hidden" multiple>
             </div>
-            <ul id="fileList" class="mt-4 space-y-2"></ul>
+            <ul id="fileList" class="mt-4 space-y-2">
+                <li th:each="file : ${files}" class="mb-2">
+                    <a th:href="@{/api/files/download/{fileId}(fileId=${file.fileId})}"
+                       th:text="${file.fileName}"
+                       class="text-blue-500 hover:underline"></a>
+                </li>
+            </ul>
         </div>
         <!-- Buttons -->
         <div class="flex justify-between">

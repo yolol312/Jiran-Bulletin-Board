@@ -39,6 +39,7 @@
                 postElement.innerHTML = `
                     <h2 class="text-xl font-bold text-black-500">[${post.categoryName}] ${post.title}</h2>
                     <div class="flex justify-end gap-2 mt-2">
+                        <p class="bg-gray-500 text-black-700 px-4 py-2 rounded">${post.isBulletin ? '게시된 글' : '임시 저장된 글'}</p>
                         <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="editPost(${post.postId})">수정</button>
                         <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="deletePost(${post.postId})">삭제</button>
                     </div>

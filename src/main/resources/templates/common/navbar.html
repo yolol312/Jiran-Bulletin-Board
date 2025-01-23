@@ -26,34 +26,9 @@
                 </button>
                 <ul id="settingsDropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg hidden">
                     <li><a class="block px-4 py-2 text-gray-700 hover:bg-gray-100" href="/profile">Profile</a></li>
-                    <li><a class="block px-4 py-2 text-gray-700 hover:bg-gray-100" href="/logout">Logout</a></li>
+                    <li><a class="block px-4 py-2 text-gray-700 hover:bg-gray-100" href="/auth/logout" onclick="logout()">Logout</a></li>
                 </ul>
             </div>
         </div>
     </div>
 </nav>
-
-<script>
-    function toggleDropdown(menuId) {
-        const menu = document.getElementById(menuId);
-        const isHidden = menu.classList.contains('hidden');
-        closeAllDropdowns(); // 모든 드롭다운을 숨김
-        if (isHidden) {
-            menu.classList.remove('hidden'); // 클릭한 드롭다운만 표시
-        }
-    }
-
-    function closeAllDropdowns() {
-        const dropdowns = document.querySelectorAll('.dropdown-menu');
-        dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
-    }
-
-    // Close dropdowns if clicked outside
-    document.addEventListener('click', function(event) {
-        const target = event.target;
-        const isDropdownButton = target.closest('[id$="Dropdown"]');
-        if (!isDropdownButton) {
-            closeAllDropdowns(); // 버튼이 아닌 다른 곳을 클릭한 경우 닫기
-        }
-    });
-</script>

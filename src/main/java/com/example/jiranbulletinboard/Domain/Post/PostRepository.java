@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, Integer> {
     // 카테고리와 제목을 기준으로 필터링된 게시글 조회
-    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
+    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt, p.isBulletin) " +
             "FROM PostEntity p " +
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
@@ -22,7 +22,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
     Page<PostDetails> findPostsWithDetails(Pageable pageable, Integer categoryId, String keyword, Boolean isBulletin);
 
     // 카테고리로 필터링된 게시글 조회
-    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
+    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt, p.isBulletin) " +
             "FROM PostEntity p " +
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
@@ -30,7 +30,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
     Page<PostDetails> findPostsByCategory(Pageable pageable, Integer categoryId, Boolean isBulletin);
 
     // 제목으로 필터링된 게시글 조회
-    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
+    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt, p.isBulletin) " +
             "FROM PostEntity p " +
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
@@ -38,14 +38,14 @@ public interface PostRepository extends JpaRepository<PostEntity, Integer> {
             "AND p.isBulletin = true")
     Page<PostDetails> findPostsByKeyword(Pageable pageable, String keyword, Boolean isBulletin);
 
-    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
+    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt, p.isBulletin) " +
             "FROM PostEntity p " +
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +
             "WHERE p.postId = :postId")
     PostDetails findPostDetailsByPostId(Integer postId);
 
-    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt) " +
+    @Query("SELECT new com.example.jiranbulletinboard.Domain.Post.PostDetails(p.postId, p.title, p.content, p.user.userId, u.userName, p.category.categoryId, c.categoryName, p.createdAt, p.isBulletin) " +
             "FROM PostEntity p " +
             "JOIN UserEntity u ON p.user.userId = u.userId " +
             "JOIN CategoryEntity c ON p.category.categoryId = c.categoryId " +

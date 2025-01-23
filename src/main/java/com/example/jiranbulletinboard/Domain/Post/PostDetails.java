@@ -18,4 +18,5 @@ public class PostDetails {
     private Integer categoryId;
     private String categoryName;
     private LocalDateTime createdAt;
+    private Boolean isBulletin;
 }

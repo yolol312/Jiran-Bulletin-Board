@@ -23,5 +23,59 @@
         </main>
     </div>
 </div>
+<script>
+    function toggleDropdown(menuId) {
+        const menu = document.getElementById(menuId);
+        const isHidden = menu.classList.contains('hidden');
+        closeAllDropdowns(); // 모든 드롭다운을 숨김
+        if (isHidden) {
+            menu.classList.remove('hidden'); // 클릭한 드롭다운만 표시
+        }
+    }
+
+    function closeAllDropdowns() {
+        const dropdowns = document.querySelectorAll('.dropdown-menu');
+        dropdowns.forEach(dropdown => dropdown.classList.add('hidden'));
+    }
+
+    // Close dropdowns if clicked outside
+    document.addEventListener('click', function(event) {
+        const target = event.target;
+        const isDropdownButton = target.closest('[id$="Dropdown"]');
+        if (!isDropdownButton) {
+            closeAllDropdowns(); // 버튼이 아닌 다른 곳을 클릭한 경우 닫기
+        }
+    });
+    async function logout() {
+        try {
+            const response = await fetchWithAuth('/auth/logout', {
+                method: 'POST',
+                credentials: 'same-origin'  // Include cookies and session in the request
+            });
+
+            if (response.ok) {
+                // Clear local storage and session storage
+                localStorage.clear();
+                sessionStorage.clear();
+
+                // Delete all cookies
+                const cookies = document.cookie.split(";");
+                cookies.forEach(cookie => {
+                    const cookieName = cookie.split("=")[0].trim();
+                    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                });
+
+                // Redirect to login page or show a logout success message
+                window.location.href = "/page/login";
+            } else {
+                console.error('Logout failed');
+                alert('Logout failed, please try again.');
+            }
+        } catch (error) {
+            console.error('Error during logout request:', error);
+            alert('An error occurred while logging out.');
+        }
+    }
+</script>
 </body>
 </html>

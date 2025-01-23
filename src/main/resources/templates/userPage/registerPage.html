@@ -2,23 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script>
-        // 서버에서 데이터 가져와 콤보박스에 추가하는 함수
         async function fetchAndPopulateSelect(url, selectId, idField, textField) {
             try {
-                const response = await fetch(url); // API 호출
+                const response = await fetch(url);
                 if (!response.ok) throw new Error(`Failed to fetch ${url}`);
-
-                const data = await response.json(); // JSON 데이터 파싱
+                const data = await response.json();
                 const select = document.getElementById(selectId);
-
-                // 데이터로 옵션 추가
                 data.forEach(item => {
                     const option = document.createElement('option');
-                    option.value = item[idField]; // valueField를 value로 설정
-                    option.textContent = item[textField]; // textField를 표시
+                    option.value = item[idField];
+                    option.textContent = item[textField];
                     select.appendChild(option);
                 });
             } catch (error) {
@@ -26,7 +23,6 @@
             }
         }
 
-        // 페이지 로드 시 API 호출 및 콤보박스 채우기
         window.onload = () => {
             fetchAndPopulateSelect('/api/titles', 'title', 'titleId', 'titleName');
             fetchAndPopulateSelect('/api/positions', 'position', 'positionId', 'positionName');
@@ -34,40 +30,54 @@
         };
     </script>
 </head>
-<body class="bg-gray-100">
-<div class="container mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-4">Register</h1>
-    <form action="/user/register" method="post" class="bg-white p-6 rounded shadow-md">
-        <div class="mb-4">
-            <label for="name" class="block text-gray-700">Name:</label>
-            <input type="text" id="name" name="userName" required class="w-full p-2 border border-gray-300 rounded">
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+<div class="w-full max-w-md bg-white p-6 rounded shadow-lg">
+    <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">회원가입</h1>
+    <form action="/user/register" method="post" class="space-y-4">
+        <div>
+            <label for="name" class="block text-gray-700 font-medium">이름:</label>
+            <input type="text" id="name" name="userName" required
+                   class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-        <div class="mb-4">
-            <label for="email" class="block text-gray-700">Email:</label>
-            <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded">
+        <div>
+            <label for="email" class="block text-gray-700 font-medium">이메일:</label>
+            <input type="email" id="email" name="email" required
+                   class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-        <div class="mb-4">
-            <label for="password" class="block text-gray-700">Password:</label>
-            <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded">
+        <div>
+            <label for="password" class="block text-gray-700 font-medium">비밀번호:</label>
+            <input type="password" id="password" name="password" required
+                   class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-        <div class="mb-4">
-            <label for="title" class="block text-gray-700">Title:</label>
-            <select id="title" name="titleId" required class="w-full p-2 border border-gray-300 rounded"></select>
+        <div>
+            <label for="title" class="block text-gray-700 font-medium">직책:</label>
+            <select id="title" name="titleId" required
+                    class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
         </div>
-        <div class="mb-4">
-            <label for="position" class="block text-gray-700">Position:</label>
-            <select id="position" name="positionId" required class="w-full p-2 border border-gray-300 rounded"></select>
+        <div>
+            <label for="position" class="block text-gray-700 font-medium">직위:</label>
+            <select id="position" name="positionId" required
+                    class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
         </div>
-        <div class="mb-4">
-            <label for="role" class="block text-gray-700">Role:</label>
-            <select id="role" name="roleId" required class="w-full p-2 border border-gray-300 rounded"></select>
+        <div>
+            <label for="role" class="block text-gray-700 font-medium">역할:</label>
+            <select id="role" name="roleId" required
+                    class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
         </div>
-        <div class="mb-4">
-            <label for="birthDate" class="block text-gray-700">Birth Date:</label>
-            <input type="date" id="birthDate" name="birthDate" required class="w-full p-2 border border-gray-300 rounded">
+        <div>
+            <label for="birthDate" class="block text-gray-700 font-medium">생년월일:</label>
+            <input type="date" id="birthDate" name="birthDate" required
+                   class="w-full p-2 mt-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Sign Up</button>
+        <div>
+            <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded transition">가입 하기</button>
+        </div>
     </form>
+    <div class="mt-4 text-center">
+        <button type="button" onclick="window.location.href='/page/login';"
+                class="text-blue-500 hover:underline">로그인 창으로</button>
+    </div>
 </div>
 </body>
 </html>
